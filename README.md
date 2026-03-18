@@ -1,6 +1,6 @@
 # The Folio
 
-A human-curated magazine at the intersection of biology, computer science, and mathematics. No AI-generated content — every piece is written or selected by hand.
+A human-curated magazine at the intersection of biology, computer science, and mathematics. Every piece is written or selected by hand, with transparent disclosure of any AI assistance.
 
 ---
 
@@ -155,6 +155,58 @@ cover: covers/001.jpg
 ```
 
 Place the image file in `content/issues/covers/`. Cover images are automatically copied to the public directory at build time.
+
+### AI Transparency Disclosure
+
+Every piece can declare how AI was involved in its creation. This shows a small "AI-assisted" pill next to the thread tags. Readers can click it to see a modal with the full breakdown.
+
+Add an `ai` field to your frontmatter:
+
+```yaml
+ai:
+  categories:
+    - proofreading
+  description: "Written entirely by the author. AI was used only for proofreading."
+```
+
+The `categories` list accepts one or more of the following values:
+
+| Category | Meaning |
+|----------|---------|
+| `proofreading` | AI checked for typos, clarity, and readability |
+| `grammar-fixes` | AI corrected grammar, punctuation, or phrasing |
+| `code-generation` | AI helped write code examples or implementations |
+| `code-review` | AI reviewed code for correctness and best practices |
+| `content-drafting` | AI assisted with writing portions of the text |
+| `content-restructuring` | AI helped reorganize or restructure the article |
+| `research-assistance` | AI helped gather, summarize, or verify references |
+| `diagram-generation` | AI generated diagrams or visual illustrations |
+| `translation` | AI assisted with translating content between languages |
+| `math-verification` | AI verified equations, proofs, or calculations |
+
+The `description` field is optional free text where you can explain the details — for example, which sections AI helped with or what the human author did differently.
+
+**Examples:**
+
+Human-written, AI proofread only:
+```yaml
+ai:
+  categories:
+    - proofreading
+  description: "Written entirely by the author. AI was used only for catching typos."
+```
+
+AI assisted with drafting and code:
+```yaml
+ai:
+  categories:
+    - content-drafting
+    - code-generation
+    - math-verification
+  description: "AI assisted with drafting sections and generating code examples. All content was reviewed and verified by the author."
+```
+
+Fully human-written, no AI involvement — simply omit the `ai` field entirely. No disclosure pill will appear.
 
 ### Images
 

@@ -4,6 +4,7 @@ import Image from "next/image";
 import { getAllPieces, getPiece, getPieceCoverUrl, LENSES } from "@/lib/content";
 import { renderMarkdown } from "@/lib/markdown";
 import ResourceLinks from "@/components/ResourceLinks";
+import AiDisclosure from "@/components/AiDisclosure";
 import SubscribeForm from "@/components/SubscribeForm";
 import type { Metadata } from "next";
 
@@ -138,13 +139,16 @@ export default async function PiecePage({ params }: { params: Promise<{ slug: st
           </Link>
         </div>
 
-        {/* Thread tags */}
-        <div className="flex flex-wrap gap-1.5 mt-4">
+        {/* Thread tags + AI disclosure */}
+        <div className="flex flex-wrap items-center gap-1.5 mt-4">
           {fm.threads.map((t) => (
             <Link key={t} href={`/explore/thread/${t}`} className="thread-tag">
               {t}
             </Link>
           ))}
+          {fm.ai && fm.ai.categories.length > 0 && (
+            <AiDisclosure ai={fm.ai} />
+          )}
         </div>
       </header>
 

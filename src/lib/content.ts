@@ -11,6 +11,23 @@ export interface PieceResource {
   type?: string; // auto-detected from URL if omitted
 }
 
+export type AiContributionCategory =
+  | "proofreading"
+  | "grammar-fixes"
+  | "code-generation"
+  | "code-review"
+  | "content-drafting"
+  | "content-restructuring"
+  | "research-assistance"
+  | "diagram-generation"
+  | "translation"
+  | "math-verification";
+
+export interface AiContribution {
+  categories: AiContributionCategory[];
+  description?: string; // optional free-text note, e.g. "AI drafted the BWT section, human rewrote the intro"
+}
+
 export interface PieceFrontmatter {
   title: string;
   author: string;
@@ -25,6 +42,7 @@ export interface PieceFrontmatter {
   youtube?: string;
   source_url?: string;
   resources?: PieceResource[];
+  ai?: AiContribution; // AI transparency disclosure
 }
 
 export interface Piece {

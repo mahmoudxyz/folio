@@ -10,6 +10,10 @@ difficulty: intermediate
 time: "18 min read"
 description: "Learn docker deep enough for Data engineer."
 resources:
+ai:
+  categories:
+    - proofreading
+  description: "Written entirely by the author. AI was used only for proofreading and catching typos."
 ---
 
 
