@@ -136,6 +136,26 @@ Each resource has:
 
 You can also set `type` manually to: `slides`, `code`, `notebook`, `dataset`, or `download` when auto-detection doesn't match.
 
+### Cover Images
+
+Each piece and issue can have a cover image that displays as a banner at the top of the page and is used for social sharing (OG/Twitter cards).
+
+**For pieces**, add a `cover` field to your frontmatter pointing to an image in your piece folder:
+
+```yaml
+cover: assets/cover.jpg
+```
+
+The cover image should ideally be **1200×630** or wider for best results on social platforms. It will be displayed as a full-width banner with `object-fit: cover`, capped at 420px height on desktop.
+
+**For issues**, add a `cover` field to the issue YAML file:
+
+```yaml
+cover: covers/001.jpg
+```
+
+Place the image file in `content/issues/covers/`. Cover images are automatically copied to the public directory at build time.
+
 ### Images
 
 Place images in the `assets/` folder next to your `index.md`. Reference them with relative paths:

@@ -42,7 +42,7 @@ export default async function LensPage({ params }: { params: Promise<{ id: strin
 
   return (
     <div className="fade-in">
-      <section className="container-wide pt-16 pb-12">
+      <section className="container-wide pt-10 sm:pt-14 pb-12">
         <Link
           href="/explore"
           className="inline-flex items-center gap-1.5 text-[13px] text-[var(--color-fg-muted)] hover:text-[var(--color-fg)] transition-colors mb-8"

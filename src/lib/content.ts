@@ -21,6 +21,7 @@ export interface PieceFrontmatter {
   difficulty: "beginner" | "intermediate" | "advanced";
   time: string;
   description: string;
+  cover?: string; // path to cover image (relative to piece folder, e.g. "assets/cover.jpg")
   youtube?: string;
   source_url?: string;
   resources?: PieceResource[];
@@ -37,6 +38,7 @@ export interface Issue {
   title: string;
   date: string;
   editorial: string;
+  cover?: string; // path relative to content/issues/, e.g. "covers/001.jpg"
   pieces: string[];
 }
 
@@ -163,3 +165,43 @@ export const LENSES: Record<string, { name: string; description: string }> = {
       "Diagram-heavy or interactive pieces where the visual is the explanation",
   },
 };
+
+/**
+ * Resolve a piece's cover image to a public URL.
+ * Cover path in frontmatter is relative to the piece folder
+ * (e.g. "assets/cover.jpg" or just "cover.jpg").
+ * The image copy pipeline puts them in /content/<slug>/.
+ */
+export function getPieceCoverUrl(slug: string, cover?: string): string | null {
+  if (!cover) return null;
+  // Strip leading ./ if present
+  const filename = cover.replace(/^\.\//, "").replace(/^(assets|images)\//, "");
+  return `/content/${slug}/${filename}`;
+}
+
+/**
+ * Resolve an issue's cover image to a public URL.
+ * Cover path in YAML is relative to content/issues/
+ * (e.g. "covers/001.jpg"). Copies to public/content/issues/.
+ */
+export function getIssueCoverUrl(issueNumber: number, cover?: string): string | null {
+  if (!cover) return null;
+
+  const srcPath = path.join(contentDir, "issues", cover);
+  if (!fs.existsSync(srcPath)) return null;
+
+  const filename = path.basename(cover);
+  const destDir = path.join(process.cwd(), "public", "content", "issues");
+  const destPath = path.join(destDir, filename);
+
+  if (!fs.existsSync(destDir)) {
+    fs.mkdirSync(destDir, { recursive: true });
+  }
+
+  // Copy if needed
+  if (!fs.existsSync(destPath) || fs.statSync(srcPath).mtimeMs > fs.statSync(destPath).mtimeMs) {
+    fs.copyFileSync(srcPath, destPath);
+  }
+
+  return `/content/issues/${filename}`;
+}

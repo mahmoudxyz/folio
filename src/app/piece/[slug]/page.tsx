@@ -1,20 +1,36 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { getAllPieces, getPiece, LENSES } from "@/lib/content";
+import Image from "next/image";
+import { getAllPieces, getPiece, getPieceCoverUrl, LENSES } from "@/lib/content";
 import { renderMarkdown } from "@/lib/markdown";
 import ResourceLinks from "@/components/ResourceLinks";
+import type { Metadata } from "next";
 
 export function generateStaticParams() {
   return getAllPieces().map((p) => ({ slug: p.slug }));
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const piece = getPiece(slug);
   if (!piece) return {};
+  const fm = piece.frontmatter;
+  const coverUrl = getPieceCoverUrl(slug, fm.cover);
+
   return {
-    title: piece.frontmatter.title,
-    description: piece.frontmatter.description,
+    title: fm.title,
+    description: fm.description,
+    openGraph: coverUrl
+      ? {
+          images: [{ url: coverUrl, width: 1200, height: 630, alt: fm.title }],
+        }
+      : undefined,
+    twitter: coverUrl
+      ? {
+          card: "summary_large_image",
+          images: [coverUrl],
+        }
+      : undefined,
   };
 }
 
@@ -26,6 +42,7 @@ export default async function PiecePage({ params }: { params: Promise<{ slug: st
   const html = await renderMarkdown(piece.content, slug);
   const fm = piece.frontmatter;
   const lensInfo = LENSES[fm.lens];
+  const coverUrl = getPieceCoverUrl(slug, fm.cover);
 
   const difficultyColors: Record<string, string> = {
     beginner: "#4a9e6e",
@@ -42,7 +59,7 @@ export default async function PiecePage({ params }: { params: Promise<{ slug: st
   return (
     <article className="fade-in">
       {/* Breadcrumb */}
-      <div className="container-article pt-16 sm:pt-20">
+      <div className="container-article pt-10 sm:pt-14">
         <div className="flex flex-wrap items-center gap-1.5 text-[12px] text-[var(--color-fg-faint)]">
           <Link href="/" className="hover:text-[var(--color-fg-muted)] transition-colors">
             Home
@@ -57,6 +74,22 @@ export default async function PiecePage({ params }: { params: Promise<{ slug: st
           </span>
         </div>
       </div>
+
+      {/* Cover image */}
+      {coverUrl && (
+        <div className="container-wide mt-6 mb-8">
+          <div className="piece-cover">
+            <Image
+              src={coverUrl}
+              alt={fm.title}
+              width={1200}
+              height={480}
+              className="piece-cover-img"
+              priority
+            />
+          </div>
+        </div>
+      )}
 
       {/* Header */}
       <header className="container-article pt-8 pb-8">

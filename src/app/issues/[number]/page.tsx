@@ -1,19 +1,29 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
-import { getAllIssues, getIssue, getPiece, LENSES } from "@/lib/content";
-import type { Piece } from "@/lib/content";
+import Image from "next/image";
+import { getAllIssues, getIssue, getIssueCoverUrl, getPiece, LENSES } from "@/lib/content";
+import type { Piece, Issue } from "@/lib/content";
+import type { Metadata } from "next";
 
 export function generateStaticParams() {
   return getAllIssues().map((i) => ({ number: String(i.number) }));
 }
 
-export async function generateMetadata({ params }: { params: Promise<{ number: string }> }) {
+export async function generateMetadata({ params }: { params: Promise<{ number: string }> }): Promise<Metadata> {
   const { number } = await params;
   const issue = getIssue(parseInt(number));
   if (!issue) return {};
+  const coverUrl = getIssueCoverUrl(issue.number, issue.cover);
+
   return {
     title: `Issue #${String(issue.number).padStart(3, "0")}: ${issue.title}`,
     description: issue.editorial,
+    openGraph: coverUrl
+      ? { images: [{ url: coverUrl, width: 1200, height: 630, alt: issue.title }] }
+      : undefined,
+    twitter: coverUrl
+      ? { card: "summary_large_image", images: [coverUrl] }
+      : undefined,
   };
 }
 
@@ -21,6 +31,8 @@ export default async function IssuePage({ params }: { params: Promise<{ number: 
   const { number } = await params;
   const issue = getIssue(parseInt(number));
   if (!issue) notFound();
+
+  const coverUrl = getIssueCoverUrl(issue.number, issue.cover);
 
   const pieces = issue.pieces
     .map((slug) => ({ slug, piece: getPiece(slug) }))
@@ -34,7 +46,7 @@ export default async function IssuePage({ params }: { params: Promise<{ number: 
   return (
     <div className="fade-in">
       {/* Header */}
-      <section className="container-wide pt-16 pb-12">
+      <section className="container-wide pt-10 sm:pt-14 pb-12">
         <div className="flex items-center gap-3 mb-8">
           <div className="decorative-line" />
           <span className="section-label">
@@ -53,6 +65,22 @@ export default async function IssuePage({ params }: { params: Promise<{ number: 
           {issue.editorial}
         </p>
       </section>
+
+      {/* Cover image */}
+      {coverUrl && (
+        <section className="container-wide pb-8">
+          <div className="issue-cover">
+            <Image
+              src={coverUrl}
+              alt={issue.title}
+              width={1200}
+              height={480}
+              className="issue-cover-img"
+              priority
+            />
+          </div>
+        </section>
+      )}
 
       {/* Pieces */}
       <section className="container-wide pb-16">

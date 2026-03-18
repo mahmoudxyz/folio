@@ -25,7 +25,7 @@ export default function ExplorePage() {
   return (
     <div className="fade-in">
       {/* Header + Search */}
-      <section className="container-wide pt-16 pb-6">
+      <section className="container-wide pt-10 sm:pt-14 pb-6">
         <div className="flex items-center gap-3 mb-8">
           <div className="decorative-line" />
           <span className="section-label">Explore</span>

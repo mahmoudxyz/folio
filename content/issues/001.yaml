@@ -10,3 +10,5 @@ editorial: >
 pieces:
   - docker
   - why-bioinformaticians-need-suffix-arrays
+
+cover: covers/cover.png

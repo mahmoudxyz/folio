@@ -18,7 +18,7 @@
   --color-accent-deep: #2c4a3e;
   --color-accent-blue: #3d6b8e;
   --font-sans: "Inter", system-ui, -apple-system, sans-serif;
-  --font-serif: "Cormorant Garamond", "Georgia", serif;
+  --font-serif: var(--font-source-serif), "Georgia", serif;
   --font-mono: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
 }
 
@@ -45,11 +45,17 @@ body {
 }
 
 /* Selection on dark backgrounds (footer, code blocks) */
-.dark-selection ::selection,
-.code-block-wrapper ::selection,
-.prose pre ::selection {
-  background: rgba(255, 255, 255, 0.25);
-  color: #fff;
+.dark-selection ::selection {
+  background: rgba(255, 255, 255, 0.25) !important;
+  color: #fff !important;
+}
+
+.code-block-wrapper *::selection,
+.prose pre *::selection,
+.code-block-wrapper::selection,
+.prose pre::selection {
+  background: rgba(255, 255, 255, 0.25) !important;
+  color: #fff !important;
 }
 
 /* ─── Layout Containers ─────────────────────────────── */
@@ -500,6 +506,47 @@ body {
 @media (max-width: 640px) {
   .piece-card { padding: 1.25rem; border-radius: 12px; }
   .piece-card-featured { padding: 1.5rem; }
+}
+
+/* ─── Cover Images ─────────────────────────────────── */
+
+.piece-cover {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
+}
+
+.piece-cover-img {
+  width: 100%;
+  height: auto;
+  max-height: 420px;
+  object-fit: cover;
+  display: block;
+}
+
+.issue-cover {
+  position: relative;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  box-shadow: 0 2px 16px rgba(0, 0, 0, 0.06);
+  margin-bottom: 2rem;
+}
+
+.issue-cover-img {
+  width: 100%;
+  height: auto;
+  max-height: 360px;
+  object-fit: cover;
+  display: block;
+}
+
+@media (max-width: 640px) {
+  .piece-cover, .issue-cover { border-radius: 12px; }
+  .piece-cover-img { max-height: 260px; }
+  .issue-cover-img { max-height: 220px; }
 }
 
 /* ─── Thread Tags ───────────────────────────────────── */

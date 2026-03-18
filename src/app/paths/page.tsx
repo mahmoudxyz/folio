@@ -14,7 +14,7 @@ export default function PathsPage() {
   return (
     <div className="fade-in">
       {/* Header */}
-      <section className="container-wide pt-16 pb-12">
+      <section className="container-wide pt-10 sm:pt-14 pb-12">
         <div className="flex items-center gap-3 mb-8">
           <div className="decorative-line" />
           <span className="section-label">Reading Paths</span>

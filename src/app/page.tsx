@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { getLatestIssue, getAllIssues, getPiece, LENSES } from "@/lib/content";
+import Image from "next/image";
+import { getLatestIssue, getAllIssues, getPiece, getIssueCoverUrl, LENSES } from "@/lib/content";
 import { getAllSearchItems } from "@/lib/search";
 import SearchBox from "@/components/SearchBox";
 import type { Piece } from "@/lib/content";
@@ -8,7 +9,7 @@ import type { Piece } from "@/lib/content";
 export const metadata: Metadata = {
   title: "The Folio — Biology, CS, and Math",
   description:
-    "A human-curated magazine at the intersection of biology, computer science, and mathematics. No AI-generated content — every piece is written by hand.",
+    "Biology, CS, and math — explained by humans who actually understand them. AI helps us build the site, not write the content.",
 };
 
 /* ─── Discipline Indicator ────────────────────────────
@@ -147,6 +148,8 @@ export default function Home() {
     );
   }
 
+  const coverUrl = getIssueCoverUrl(latest.number, latest.cover);
+
   const pieces = latest.pieces
     .map((slug) => ({ slug, piece: getPiece(slug) }))
     .filter((p): p is { slug: string; piece: Piece } => p.piece !== null);
@@ -174,17 +177,17 @@ export default function Home() {
         </div>
 
         <h1
-          className="text-[2.25rem] sm:text-5xl md:text-[3.5rem] font-medium tracking-tight leading-[1.1] mb-7"
+          className="text-[2.25rem] sm:text-5xl md:text-[3.5rem] font-semibold tracking-tight leading-[1.1] mb-7"
           style={{ fontFamily: "var(--font-serif)" }}
         >
-          Where biology, CS,
+          The ideas that sit
           <br className="hidden sm:block" />
-          {" "}and math converge
+          {" "}between the fields
         </h1>
 
         <p className="text-[var(--color-fg-muted)] text-[15px] sm:text-base leading-[1.75] max-w-xl mx-auto mb-12">
-          A human-curated magazine of the best content for people who think
-          across disciplines. No AI slop — every piece is written or selected by hand.
+          Biology, CS, and math — explained by humans who actually understand them.
+          AI helps us build the site, not write the content.
         </p>
 
         {/* Full-width search */}
@@ -235,6 +238,22 @@ export default function Home() {
             </p>
           </div>
         </div>
+
+        {/* Issue cover */}
+        {coverUrl && (
+          <div className="mb-10">
+            <div className="issue-cover">
+              <Image
+                src={coverUrl}
+                alt={latest.title}
+                width={1200}
+                height={480}
+                className="issue-cover-img"
+                priority
+              />
+            </div>
+          </div>
+        )}
 
         {/* Featured piece */}
         {featured && (
@@ -323,14 +342,14 @@ export default function Home() {
           <div className="max-w-md">
             <p className="section-label mb-4">Open Source</p>
             <h2
-              className="text-xl sm:text-2xl font-medium tracking-tight mb-4"
+              className="text-xl sm:text-2xl font-semibold tracking-tight mb-4"
               style={{ fontFamily: "var(--font-serif)" }}
             >
-              Written by humans, for humans
+              AI builds the site. Humans write the words.
             </h2>
             <p className="text-[14px] text-[var(--color-fg-muted)] leading-[1.75]">
-              Every piece is carefully written or curated. We don&apos;t accept
-              AI-generated content. Want to write something?
+              We use AI for code and proofreading — never to generate the content
+              you read. Every piece is written by someone who actually learned the thing.
             </p>
           </div>
           <a
