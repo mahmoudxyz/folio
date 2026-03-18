@@ -1,0 +1,12 @@
+number: 1
+title: "Premiere Issue"
+date: "2026-03-18"
+editorial: >
+  Welcome to The Folio. This is a human-curated magazine for people who sit at
+  the intersection of biology, computer science, and mathematics. No AI slop —
+  just carefully selected and written content that bridges these fields. In our
+  first issue, we explore Bayesian intuition, suffix arrays in genomics, and the
+  surprising parallels between gradient descent and natural selection.
+pieces:
+  - docker
+  - why-bioinformaticians-need-suffix-arrays

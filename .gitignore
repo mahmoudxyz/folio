@@ -17,6 +17,9 @@
 /.next/
 /out/
 
+# generated content assets (copied at build time)
+/public/content/
+
 # production
 /build
 

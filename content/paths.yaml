@@ -1,0 +1,24 @@
+paths:
+  - id: cs-for-biologists
+    title: "CS for Biologists"
+    description: "A guided path through core computer science concepts, explained through biological examples."
+    pieces:
+      - bayes-theorem-intuition
+      - why-bioinformaticians-need-suffix-arrays
+      - needleman-wunsch-revisited
+
+  - id: the-math-underneath
+    title: "The Math Underneath"
+    description: "The mathematical foundations that unify biology and computation."
+    pieces:
+      - bayes-theorem-intuition
+      - pca-gene-expression
+      - gradient-descent-meets-evolution
+
+  - id: from-zero-to-genomics
+    title: "From Zero to Genomics"
+    description: "Start here if you're a CS person curious about computational biology."
+    pieces:
+      - needleman-wunsch-revisited
+      - why-bioinformaticians-need-suffix-arrays
+      - pca-gene-expression

@@ -1,0 +1,4 @@
+threads:
+  - id: algorithms
+    name: Algorithms
+    description: Classic and modern algorithms across disciplines
