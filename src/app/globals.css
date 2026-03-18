@@ -45,8 +45,10 @@ body {
 }
 
 /* Selection on dark backgrounds (footer, code blocks) */
-.dark-selection ::selection {
-  background: rgba(255, 255, 255, 0.2);
+.dark-selection ::selection,
+.code-block-wrapper ::selection,
+.prose pre ::selection {
+  background: rgba(255, 255, 255, 0.25);
   color: #fff;
 }
 
