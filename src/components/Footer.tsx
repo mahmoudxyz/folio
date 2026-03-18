@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
+import SubscribeForm from "@/components/SubscribeForm";
 
 /* ─── Footer ─────────────────────────────────────────
    A bundle of discipline strands braid together at the
@@ -12,6 +13,7 @@ const NAV_LINKS = [
   { href: "/explore", label: "Explore" },
   { href: "/paths", label: "Paths" },
   { href: "/about", label: "About" },
+  { href: "/feed.xml", label: "RSS Feed" },
 ] as const;
 
 const LEGAL_LINKS = [
@@ -209,10 +211,11 @@ export default function Footer() {
 
   return (
     <footer className="mt-36 sm:mt-44 relative">
-      {/* Pre-footer — warm CTA band */}
+      {/* Pre-footer — subscribe + explore band */}
       <div className="bg-[var(--color-bg-warm)] border-t border-[var(--color-border)]">
         <div className="container-wide py-16 sm:py-20">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16">
+            {/* Subscribe side */}
             <div>
               <h3
                 className="text-xl sm:text-2xl font-semibold tracking-tight"
@@ -220,30 +223,54 @@ export default function Footer() {
               >
                 Stay curious across disciplines
               </h3>
-              <p className="text-[14px] text-[var(--color-fg-muted)] mt-3 max-w-md leading-[1.7]">
+              <p className="text-[14px] text-[var(--color-fg-muted)] mt-3 mb-6 max-w-md leading-[1.7]">
                 New issues drop biweekly. Each one is a deliberate mix of
                 biology, computer science, and mathematics — because the best
                 ideas live at the edges.
               </p>
+              <SubscribeForm variant="inline" />
+              <div className="flex items-center gap-4 mt-4">
+                <span className="text-[11px] text-[var(--color-fg-faint)]">
+                  Biweekly &middot; Unsubscribe anytime
+                </span>
+                <a
+                  href="/feed.xml"
+                  className="flex items-center gap-1.5 text-[11px] text-[var(--color-fg-faint)] hover:text-[var(--color-accent)] transition-colors"
+                  title="RSS Feed"
+                >
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M6.18 15.64a2.18 2.18 0 0 1 2.18 2.18C8.36 19 7.38 20 6.18 20C5 20 4 19 4 17.82a2.18 2.18 0 0 1 2.18-2.18M4 4.44A15.56 15.56 0 0 1 19.56 20h-2.83A12.73 12.73 0 0 0 4 7.27V4.44m0 5.66a9.9 9.9 0 0 1 9.9 9.9h-2.83A7.07 7.07 0 0 0 4 12.93V10.1z" />
+                  </svg>
+                  RSS
+                </a>
+              </div>
             </div>
-            <Link
-              href="/explore"
-              className="inline-flex items-center gap-2.5 px-6 py-3 rounded-xl border border-[var(--color-border-strong)] bg-[var(--color-bg-elevated)] text-[13px] font-medium text-[var(--color-fg-secondary)] hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-all flex-shrink-0 shadow-sm"
-            >
-              Explore all content
-              <svg
-                width="14"
-                height="14"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
+
+            {/* Explore side */}
+            <div className="flex flex-col justify-center">
+              <p className="text-[14px] text-[var(--color-fg-muted)] leading-[1.7] mb-6 max-w-sm">
+                Or browse what&apos;s already here — lenses, threads, and reading
+                paths designed to build real understanding.
+              </p>
+              <Link
+                href="/explore"
+                className="inline-flex items-center gap-2.5 px-6 py-3 rounded-xl border border-[var(--color-border-strong)] bg-[var(--color-bg-elevated)] text-[13px] font-medium text-[var(--color-fg-secondary)] hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-all self-start shadow-sm"
               >
-                <path d="M5 12h14M12 5l7 7-7 7" />
-              </svg>
-            </Link>
+                Explore all content
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              </Link>
+            </div>
           </div>
         </div>
       </div>

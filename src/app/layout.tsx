@@ -85,6 +85,12 @@ export default function RootLayout({
           href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap"
           rel="stylesheet"
         />
+        <link
+          rel="alternate"
+          type="application/rss+xml"
+          title="The Folio — RSS Feed"
+          href="/feed.xml"
+        />
       </head>
       <body className={`${inter.variable} ${sourceSerif.variable} antialiased`}>
         <div className="min-h-screen flex flex-col">

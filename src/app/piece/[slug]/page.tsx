@@ -4,6 +4,7 @@ import Image from "next/image";
 import { getAllPieces, getPiece, getPieceCoverUrl, LENSES } from "@/lib/content";
 import { renderMarkdown } from "@/lib/markdown";
 import ResourceLinks from "@/components/ResourceLinks";
+import SubscribeForm from "@/components/SubscribeForm";
 import type { Metadata } from "next";
 
 export function generateStaticParams() {
@@ -205,6 +206,11 @@ export default async function PiecePage({ params }: { params: Promise<{ slug: st
           </div>
         </div>
       )}
+
+      {/* Subscribe CTA */}
+      <div className="container-article pb-10">
+        <SubscribeForm variant="card" />
+      </div>
 
       {/* Footer nav */}
       <div className="container-article pb-16">

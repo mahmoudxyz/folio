@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import SubscribeForm from "@/components/SubscribeForm";
 
 export const metadata: Metadata = {
   title: "About",
@@ -80,6 +81,10 @@ export default function AboutPage() {
             . If you want to write a piece, fix a typo, or suggest a new reading
             path, open a pull request.
           </p>
+        </div>
+
+        <div className="mt-16">
+          <SubscribeForm variant="card" />
         </div>
       </section>
     </div>
