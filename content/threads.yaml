@@ -2,3 +2,63 @@ threads:
   - id: algorithms
     name: Algorithms
     description: Classic and modern algorithms across disciplines
+
+  - id: data-structures
+    name: Data Structures
+    description: How we organize information — from arrays to trees to graphs
+
+  - id: sequence-analysis
+    name: Sequence Analysis
+    description: Comparing, aligning, and searching biological sequences
+
+  - id: probability
+    name: Probability
+    description: Reasoning under uncertainty — Bayes, distributions, and inference
+
+  - id: graph-theory
+    name: Graph Theory
+    description: Networks, paths, and connections in biology, CS, and math
+
+  - id: evolution
+    name: Evolution
+    description: Natural selection, phylogenetics, and evolutionary computation
+
+  - id: genomics
+    name: Genomics
+    description: Genome assembly, annotation, and large-scale sequence analysis
+
+  - id: neural-networks
+    name: Neural Networks
+    description: From perceptrons to transformers — models that learn from data
+
+  - id: linear-algebra
+    name: Linear Algebra
+    description: Vectors, matrices, and transformations that power modern computation
+
+  - id: statistics
+    name: Statistics
+    description: Making sense of data — tests, models, and experimental design
+
+  - id: optimization
+    name: Optimization
+    description: Finding the best solution — gradient descent, dynamic programming, and beyond
+
+  - id: information-theory
+    name: Information Theory
+    description: Entropy, compression, and the fundamental limits of communication
+
+  - id: devops
+    name: DevOps
+    description: Containers, pipelines, and infrastructure for scientific computing
+
+  - id: bioinformatics-tools
+    name: Bioinformatics Tools
+    description: Software and workflows for computational biology
+
+  - id: machine-learning
+    name: Machine Learning
+    description: Algorithms that learn patterns from data across domains
+
+  - id: reproducibility
+    name: Reproducibility
+    description: Making scientific computation reliable and repeatable

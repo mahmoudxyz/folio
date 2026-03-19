@@ -28,6 +28,12 @@ export interface AiContribution {
   description?: string; // optional free-text note, e.g. "AI drafted the BWT section, human rewrote the intro"
 }
 
+export interface QuickTakeawayItem {
+  fact: string; // the main fact/news
+  source?: string; // optional link to source
+  field: "bio" | "cs" | "math" | "cross"; // which discipline
+}
+
 export interface PieceFrontmatter {
   title: string;
   author: string;
@@ -38,6 +44,9 @@ export interface PieceFrontmatter {
   difficulty: "beginner" | "intermediate" | "advanced";
   time: string;
   description: string;
+  takeaway?: string; // single-sentence key takeaway for cards, RSS, social
+  format?: "long" | "short"; // controls layout — short pieces get a lighter treatment
+  items?: QuickTakeawayItem[]; // structured items for quick-takeaways lens
   cover?: string; // path to cover image (relative to piece folder, e.g. "assets/cover.jpg")
   youtube?: string;
   source_url?: string;
@@ -51,13 +60,19 @@ export interface Piece {
   content: string;
 }
 
+export interface IssueSection {
+  label: string;
+  pieces: string[];
+}
+
 export interface Issue {
   number: number;
   title: string;
   date: string;
   editorial: string;
   cover?: string; // path relative to content/issues/, e.g. "covers/001.jpg"
-  pieces: string[];
+  pieces: string[]; // flat list (legacy / simple issues)
+  sections?: IssueSection[]; // grouped pieces for magazine-style layout
 }
 
 export interface Thread {
@@ -121,6 +136,16 @@ export function getIssue(number: number): Issue | null {
   return issues.find((i) => i.number === number) ?? null;
 }
 
+/**
+ * Get all piece slugs for an issue, whether from flat `pieces` or `sections`.
+ */
+export function getIssuePieceSlugs(issue: Issue): string[] {
+  if (issue.sections && issue.sections.length > 0) {
+    return issue.sections.flatMap((s) => s.pieces);
+  }
+  return issue.pieces ?? [];
+}
+
 export function getLatestIssue(): Issue | null {
   const issues = getAllIssues();
   return issues[0] ?? null;
@@ -181,6 +206,26 @@ export const LENSES: Record<string, { name: string; description: string }> = {
     name: "Visual Explainers",
     description:
       "Diagram-heavy or interactive pieces where the visual is the explanation",
+  },
+  essay: {
+    name: "Essays",
+    description:
+      "Arguments, reflections, and perspectives — no code required",
+  },
+  "field-notes": {
+    name: "Field Notes",
+    description:
+      "Short observations, quick takes, and things we noticed",
+  },
+  review: {
+    name: "Reviews",
+    description:
+      "Tools, books, and papers — evaluated honestly",
+  },
+  "quick-takeaways": {
+    name: "Quick Takeaways",
+    description:
+      "Fast facts and news from across biology, CS, and math — all in one place",
   },
 };
 

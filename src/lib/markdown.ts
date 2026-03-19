@@ -135,6 +135,38 @@ function rewriteImagePaths(source: string, slug: string): string {
   );
 }
 
+export interface TocEntry {
+  id: string;
+  text: string;
+  level: number;
+}
+
+/**
+ * Extract headings (h2, h3) from rendered HTML for table of contents.
+ */
+export function extractToc(html: string): TocEntry[] {
+  const entries: TocEntry[] = [];
+  const re = /<h([23])\s+id="([^"]+)"[^>]*>([\s\S]*?)<\/h\1>/g;
+  let match;
+  while ((match = re.exec(html)) !== null) {
+    const text = match[3].replace(/<[^>]+>/g, "").replace(/&[^;]+;/g, "").trim();
+    entries.push({ id: match[2], text, level: parseInt(match[1]) });
+  }
+  return entries;
+}
+
+/**
+ * Add clickable anchor links to headings for easy sharing.
+ */
+function addHeadingAnchors(html: string): string {
+  return html.replace(
+    /<h([2-4])(\s+id="([^"]+)"[^>]*)>([\s\S]*?)<\/h\1>/g,
+    (_, level, attrs, id, content) => {
+      return `<h${level}${attrs}><a href="#${id}" class="heading-anchor" aria-hidden="true">#</a>${content}</h${level}>`;
+    }
+  );
+}
+
 export async function renderMarkdown(source: string, slug?: string): Promise<string> {
   let content = transformCallouts(source);
 
@@ -161,6 +193,7 @@ export async function renderMarkdown(source: string, slug?: string): Promise<str
   let html = result.toString();
   html = addCopyButtons(html);
   html = wrapTables(html);
+  html = addHeadingAnchors(html);
 
   return html;
 }

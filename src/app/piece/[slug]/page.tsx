@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { getAllPieces, getPiece, getPieceCoverUrl, LENSES } from "@/lib/content";
-import { renderMarkdown } from "@/lib/markdown";
+import { renderMarkdown, extractToc } from "@/lib/markdown";
 import ResourceLinks from "@/components/ResourceLinks";
 import AiDisclosure from "@/components/AiDisclosure";
 import SubscribeForm from "@/components/SubscribeForm";
@@ -44,6 +44,7 @@ export default async function PiecePage({ params }: { params: Promise<{ slug: st
   const html = await renderMarkdown(piece.content, slug);
   const fm = piece.frontmatter;
   const lensInfo = LENSES[fm.lens];
+  const toc = extractToc(html);
   const coverUrl = getPieceCoverUrl(slug, fm.cover);
 
   const difficultyColors: Record<string, string> = {
@@ -120,6 +121,15 @@ export default async function PiecePage({ params }: { params: Promise<{ slug: st
           {fm.description}
         </p>
 
+        {fm.takeaway && (
+          <div className="mb-6 px-4 py-3 rounded-lg bg-[var(--color-bg-warm)] border-l-3 border-[var(--color-accent)]">
+            <p className="text-[13px] font-medium text-[var(--color-fg-muted)]">
+              <span className="text-[11px] uppercase tracking-wider text-[var(--color-fg-faint)] mr-2">Key takeaway</span>
+              {fm.takeaway}
+            </p>
+          </div>
+        )}
+
         {/* Author line */}
         <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-[13px] text-[var(--color-fg-muted)] pb-6 border-b border-[var(--color-border)]">
           <span className="flex items-center gap-2">
@@ -159,10 +169,97 @@ export default async function PiecePage({ params }: { params: Promise<{ slug: st
         </div>
       )}
 
+      {/* Table of contents */}
+      {toc.length >= 3 && (
+        <nav className="container-article pt-6 pb-4">
+          <details className="group rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-elevated)] overflow-hidden">
+            <summary className="flex items-center gap-2 px-5 py-3 cursor-pointer text-[13px] font-medium text-[var(--color-fg-muted)] select-none hover:text-[var(--color-fg)] transition-colors">
+              <svg
+                width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"
+                className="flex-shrink-0 transition-transform group-open:rotate-90"
+              >
+                <path d="M9 18l6-6-6-6"/>
+              </svg>
+              Table of contents
+              <span className="text-[11px] text-[var(--color-fg-faint)] ml-1">({toc.length})</span>
+            </summary>
+            <ul className="px-5 pb-4 pt-1 space-y-0.5">
+              {toc.map((entry) => (
+                <li key={entry.id}>
+                  <a
+                    href={`#${entry.id}`}
+                    className={`block py-1 text-[13px] text-[var(--color-fg-muted)] hover:text-[var(--color-accent)] transition-colors ${
+                      entry.level === 3 ? "pl-4" : ""
+                    }`}
+                  >
+                    {entry.text}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </details>
+        </nav>
+      )}
+
       {/* Body */}
-      <div className="container-article pb-12">
-        <div className="prose" dangerouslySetInnerHTML={{ __html: html }} />
-      </div>
+      {fm.lens === "quick-takeaways" && fm.items && fm.items.length > 0 ? (
+        <div className="container-article pb-12">
+          {/* Optional intro prose */}
+          {html.trim() && (
+            <div className="prose mb-8" dangerouslySetInnerHTML={{ __html: html }} />
+          )}
+          {/* Items grid */}
+          <div className="grid sm:grid-cols-2 gap-4">
+            {fm.items.map((item, i) => {
+              const fieldStyles: Record<string, { dot: string; border: string }> = {
+                bio: { dot: "bg-emerald-500", border: "border-l-emerald-500" },
+                cs: { dot: "bg-blue-500", border: "border-l-blue-500" },
+                math: { dot: "bg-amber-500", border: "border-l-amber-500" },
+                cross: { dot: "bg-purple-500", border: "border-l-purple-500" },
+              };
+              const style = fieldStyles[item.field] ?? fieldStyles.cross;
+              const fieldLabels: Record<string, string> = {
+                bio: "Biology",
+                cs: "Computer Science",
+                math: "Mathematics",
+                cross: "Cross-discipline",
+              };
+
+              return (
+                <div
+                  key={i}
+                  className={`p-4 rounded-lg bg-[var(--color-bg-elevated)] border border-[var(--color-border)] border-l-3 ${style.border}`}
+                >
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className={`w-2 h-2 rounded-full ${style.dot}`} />
+                    <span className="text-[10px] uppercase tracking-wider text-[var(--color-fg-faint)]">
+                      {fieldLabels[item.field] ?? item.field}
+                    </span>
+                  </div>
+                  <p className="text-[14px] leading-relaxed text-[var(--color-fg)]">
+                    {item.fact}
+                  </p>
+                  {item.source && (
+                    <a
+                      href={item.source}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-block mt-2 text-[11px] text-[var(--color-accent)] hover:underline"
+                    >
+                      Source &rarr;
+                    </a>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      ) : (
+        <div className="container-article pb-12">
+          <div className="prose" dangerouslySetInnerHTML={{ __html: html }} />
+        </div>
+      )}
 
       {/* YouTube */}
       {fm.youtube && (

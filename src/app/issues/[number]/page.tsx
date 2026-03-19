@@ -1,8 +1,8 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
-import { getAllIssues, getIssue, getIssueCoverUrl, getPiece, LENSES } from "@/lib/content";
-import type { Piece, Issue } from "@/lib/content";
+import { getAllIssues, getIssue, getIssueCoverUrl, getIssuePieceSlugs, getPiece, LENSES } from "@/lib/content";
+import type { Piece, Issue, IssueSection } from "@/lib/content";
 import type { Metadata } from "next";
 
 export function generateStaticParams() {
@@ -27,6 +27,59 @@ export async function generateMetadata({ params }: { params: Promise<{ number: s
   };
 }
 
+const difficultyColors: Record<string, string> = {
+  beginner: "#4a9e6e",
+  intermediate: "#c49a3c",
+  advanced: "#c45d3e",
+};
+
+function PieceRow({ slug, piece, featured = false }: { slug: string; piece: Piece; featured?: boolean }) {
+  const fm = piece.frontmatter;
+  const lensInfo = LENSES[fm.lens];
+
+  return (
+    <Link
+      href={`/piece/${slug}`}
+      className={`group block piece-card ${featured ? "piece-card-featured" : ""}`}
+    >
+      <div className="flex items-center gap-3 mb-3">
+        <span className={`badge lens-${fm.lens}`}>
+          {lensInfo?.name ?? fm.lens}
+        </span>
+        <span className="flex items-center gap-1.5 text-[11px] text-[var(--color-fg-muted)]">
+          <span
+            className="w-1.5 h-1.5 rounded-full"
+            style={{ background: difficultyColors[fm.difficulty] ?? "#999" }}
+          />
+          {fm.difficulty}
+        </span>
+        <span className="text-[11px] text-[var(--color-fg-faint)]">{fm.time}</span>
+      </div>
+      <h3
+        className={`font-medium tracking-tight mb-2 group-hover:text-[var(--color-accent)] transition-colors ${
+          featured ? "text-2xl" : "text-lg"
+        }`}
+        style={{ fontFamily: "var(--font-serif)" }}
+      >
+        {fm.title}
+      </h3>
+      <p className="text-[13px] text-[var(--color-fg-muted)] leading-relaxed max-w-lg">
+        {fm.description}
+      </p>
+      {fm.takeaway && (
+        <p className="text-[12px] text-[var(--color-fg-faint)] italic mt-2">
+          Takeaway: {fm.takeaway}
+        </p>
+      )}
+      <div className="flex flex-wrap gap-1.5 mt-3">
+        {fm.threads.map((t) => (
+          <span key={t} className="thread-tag">{t}</span>
+        ))}
+      </div>
+    </Link>
+  );
+}
+
 export default async function IssuePage({ params }: { params: Promise<{ number: string }> }) {
   const { number } = await params;
   const issue = getIssue(parseInt(number));
@@ -34,7 +87,7 @@ export default async function IssuePage({ params }: { params: Promise<{ number: 
 
   const coverUrl = getIssueCoverUrl(issue.number, issue.cover);
 
-  const pieces = issue.pieces
+  const pieces = getIssuePieceSlugs(issue)
     .map((slug) => ({ slug, piece: getPiece(slug) }))
     .filter((p): p is { slug: string; piece: Piece } => p.piece !== null);
 
@@ -84,55 +137,39 @@ export default async function IssuePage({ params }: { params: Promise<{ number: 
 
       {/* Pieces */}
       <section className="container-wide pb-16">
-        <div className="space-y-4">
-          {pieces.map(({ slug, piece }, i) => {
-            const fm = piece.frontmatter;
-            const lensInfo = LENSES[fm.lens];
-            const difficultyColors: Record<string, string> = {
-              beginner: "#4a9e6e",
-              intermediate: "#c49a3c",
-              advanced: "#c45d3e",
-            };
+        {issue.sections && issue.sections.length > 0 ? (
+          /* Sectioned layout */
+          <div className="space-y-12">
+            {issue.sections.map((section) => {
+              const sectionPieces = section.pieces
+                .map((slug) => ({ slug, piece: getPiece(slug) }))
+                .filter((p): p is { slug: string; piece: Piece } => p.piece !== null);
 
-            return (
-              <Link
-                key={slug}
-                href={`/piece/${slug}`}
-                className={`group block piece-card ${i === 0 ? "piece-card-featured" : ""}`}
-              >
-                <div className="flex items-center gap-3 mb-3">
-                  <span className={`badge lens-${fm.lens}`}>
-                    {lensInfo?.name ?? fm.lens}
-                  </span>
-                  <span className="flex items-center gap-1.5 text-[11px] text-[var(--color-fg-muted)]">
-                    <span
-                      className="w-1.5 h-1.5 rounded-full"
-                      style={{ background: difficultyColors[fm.difficulty] ?? "#999" }}
-                    />
-                    {fm.difficulty}
-                  </span>
-                  <span className="text-[11px] text-[var(--color-fg-faint)]">{fm.time}</span>
+              if (sectionPieces.length === 0) return null;
+
+              return (
+                <div key={section.label}>
+                  <div className="flex items-center gap-3 mb-5">
+                    <div className="decorative-line" />
+                    <h2 className="section-label">{section.label}</h2>
+                  </div>
+                  <div className="space-y-4">
+                    {sectionPieces.map(({ slug, piece }) => (
+                      <PieceRow key={slug} slug={slug} piece={piece} />
+                    ))}
+                  </div>
                 </div>
-                <h3
-                  className={`font-medium tracking-tight mb-2 group-hover:text-[var(--color-accent)] transition-colors ${
-                    i === 0 ? "text-2xl" : "text-lg"
-                  }`}
-                  style={{ fontFamily: "var(--font-serif)" }}
-                >
-                  {fm.title}
-                </h3>
-                <p className="text-[13px] text-[var(--color-fg-muted)] leading-relaxed max-w-lg">
-                  {fm.description}
-                </p>
-                <div className="flex flex-wrap gap-1.5 mt-3">
-                  {fm.threads.map((t) => (
-                    <span key={t} className="thread-tag">{t}</span>
-                  ))}
-                </div>
-              </Link>
-            );
-          })}
-        </div>
+              );
+            })}
+          </div>
+        ) : (
+          /* Flat layout (legacy) */
+          <div className="space-y-4">
+            {pieces.map(({ slug, piece }, i) => (
+              <PieceRow key={slug} slug={slug} piece={piece} featured={i === 0} />
+            ))}
+          </div>
+        )}
       </section>
 
       {/* Issue navigation */}

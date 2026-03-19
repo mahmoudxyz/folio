@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import Image from "next/image";
-import { getLatestIssue, getAllIssues, getPiece, getIssueCoverUrl, LENSES } from "@/lib/content";
+import { getLatestIssue, getAllIssues, getPiece, getIssueCoverUrl, getIssuePieceSlugs, LENSES } from "@/lib/content";
 import { getAllSearchItems } from "@/lib/search";
 import SearchBox from "@/components/SearchBox";
 import SubscribeForm from "@/components/SubscribeForm";
@@ -61,6 +61,10 @@ function PieceCard({ slug, piece, variant = "default" }: { slug: string; piece: 
     "tools-craft": "#7c3aed",
     "papers-classics": "#9d174d",
     "visual-explainers": "#0e7490",
+    essay: "#8b6914",
+    "field-notes": "#2c8c5c",
+    review: "#6b3fa0",
+    "quick-takeaways": "#b8860b",
   };
   const accentColor = lensAccents[fm.lens] ?? "var(--color-border-strong)";
 
@@ -111,6 +115,13 @@ function PieceCard({ slug, piece, variant = "default" }: { slug: string; piece: 
             {fm.description}
           </p>
 
+          {/* Takeaway */}
+          {fm.takeaway && (
+            <p className="text-[12px] text-[var(--color-fg-faint)] italic mt-2 line-clamp-1">
+              Takeaway: {fm.takeaway}
+            </p>
+          )}
+
           {/* Thread tags */}
           <div className="flex flex-wrap gap-2 mt-5">
             {fm.threads.map((t) => (
@@ -151,7 +162,7 @@ export default function Home() {
 
   const coverUrl = getIssueCoverUrl(latest.number, latest.cover);
 
-  const pieces = latest.pieces
+  const pieces = getIssuePieceSlugs(latest)
     .map((slug) => ({ slug, piece: getPiece(slug) }))
     .filter((p): p is { slug: string; piece: Piece } => p.piece !== null);
 
@@ -296,7 +307,7 @@ export default function Home() {
 
           <div className="space-y-5">
             {olderIssues.map((issue) => {
-              const issuePieces = issue.pieces
+              const issuePieces = getIssuePieceSlugs(issue)
                 .map((slug) => getPiece(slug))
                 .filter((p): p is Piece => p !== null);
 

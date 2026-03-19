@@ -107,6 +107,12 @@ body {
   color: var(--color-fg);
 }
 
+.prose h2,
+.prose h3,
+.prose h4 {
+  position: relative;
+  scroll-margin-top: 5rem;
+}
 .prose h2 {
   font-family: var(--font-serif);
   font-size: clamp(1.375rem, 3vw, 1.625rem);
@@ -123,6 +129,34 @@ body {
   margin: 2.5rem 0 0.75rem;
   letter-spacing: -0.01em;
   color: var(--color-fg);
+}
+
+/* Heading anchor links */
+.heading-anchor {
+  position: absolute;
+  left: -1.5em;
+  width: 1.5em;
+  text-align: center;
+  color: var(--color-fg-faint);
+  text-decoration: none;
+  opacity: 0;
+  font-weight: 400;
+  font-size: 0.85em;
+  transition: opacity 0.15s;
+}
+.prose h2:hover .heading-anchor,
+.prose h3:hover .heading-anchor,
+.prose h4:hover .heading-anchor,
+.heading-anchor:focus {
+  opacity: 1;
+}
+@media (max-width: 640px) {
+  .heading-anchor {
+    position: static;
+    width: auto;
+    opacity: 0.4;
+    margin-right: 0.3em;
+  }
 }
 
 .prose p { margin-bottom: 1.375rem; }
@@ -341,13 +375,37 @@ body {
   margin: 3rem 0;
 }
 
-/* KaTeX */
-.prose .math-display {
+/* KaTeX — display math */
+.prose .katex-display {
   overflow-x: auto;
   -webkit-overflow-scrolling: touch;
   padding: 1rem 0;
+  margin: 0;
 }
-.prose .math-inline { font-size: 0.95em; }
+.prose .katex-display > .katex {
+  white-space: normal;
+  word-wrap: break-word;
+}
+.prose .katex-display > .katex > .katex-html {
+  white-space: normal;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0 0.2em;
+}
+.prose .katex-display > .katex > .katex-html > .base {
+  margin: 0.25em 0;
+}
+
+/* KaTeX — inline math */
+.prose .katex {
+  font-size: 0.95em;
+  white-space: normal;
+  word-wrap: break-word;
+}
+.prose .katex > .katex-html {
+  white-space: normal;
+  flex-wrap: wrap;
+}
 
 /* ─── Callouts ──────────────────────────────────────── */
 
@@ -477,6 +535,10 @@ body {
 .lens-tools-craft       { background: #f2eef8; color: #5a2c6e; }
 .lens-papers-classics   { background: #f8eef2; color: #6e2c4a; }
 .lens-visual-explainers { background: #eef4f8; color: #2c5a6e; }
+.lens-essay             { background: #f5f0e8; color: #5c4a2c; }
+.lens-field-notes       { background: #e8f5ee; color: #2c6e4a; }
+.lens-review            { background: #f0e8f5; color: #4a2c6e; }
+.lens-quick-takeaways   { background: #fef3e2; color: #7a5a1e; }
 
 /* ─── Cards ─────────────────────────────────────────── */
 

@@ -7,8 +7,13 @@ editorial: >
   just carefully selected and written content that bridges these fields. In our
   first issue, we explore Bayesian intuition, suffix arrays in genomics, and the
   surprising parallels between gradient descent and natural selection.
-pieces:
-  - docker
-  - why-bioinformaticians-need-suffix-arrays
+sections:
+  - label: "Features"
+    pieces:
+      - docker
+      - why-bioinformaticians-need-suffix-arrays
+  - label: "Quick Takeaways"
+    pieces:
+      - quick-takeaways-001
 
 cover: covers/cover.png
